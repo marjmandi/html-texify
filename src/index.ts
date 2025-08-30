@@ -9,11 +9,13 @@ export function textify({
   html,
   preserveFormatting = true,
 }: TextifyOptions): string {
-  // Ignore rest of the function if it's alraedy empty
+  // Ignore rest of the function if it's already empty
   if (!html) return "";
 
-  if (!preserveFormatting) {
-    return html.replace(/<[^>]+>/g, "").trim();
+  if (preserveFormatting) {
+    // Keep readable formatting
+    return preserveFormat(html);
   }
-  return preserveFormat(html);
+  // Strip all HTML tags completely
+  return html.replace(/<[^>]+>/g, "").trim();
 }
