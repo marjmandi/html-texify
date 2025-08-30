@@ -1,4 +1,12 @@
-export default function preserveFormat(html: string): string {
+interface PreserveFormatOptions {
+  html: string;
+  ignoreTags?: string[];
+}
+
+export default function preserveFormat({
+  html,
+  ignoreTags,
+}: PreserveFormatOptions): string {
   if (!html) return "";
 
   // Normalize spaces between tags
