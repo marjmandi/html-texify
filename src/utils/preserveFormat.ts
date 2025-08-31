@@ -5,7 +5,7 @@ interface PreserveFormatOptions {
 
 export default function preserveFormat({
   html,
-  ignoreTags,
+  ignoreTags = [],
 }: PreserveFormatOptions): string {
   if (!html) return "";
 
@@ -13,19 +13,23 @@ export default function preserveFormat({
   html = html.replace(/>\s+</g, "><");
 
   // Convert <br> to newline
-  html = html.replace(/<br\s*\/?>/gi, "\n");
+  html = !ignoreTags.includes("br") ? html.replace(/<br\s*\/?>/gi, "\n") : html;
 
   // Headings and paragraphs -> double newline
-  html = html.replace(/<\/(h[1-6]|p)>/gi, "\n\n");
+  html = html.replace(/<\/(h[1-6]|p)>/gi, (match, tag) =>
+    ignoreTags.includes(tag.toLowerCase()) ? match : "\n\n"
+  );
 
-  // Bold / Italic
+  // Bold
   html = html.replace(
     /<(b|strong)>(.*?)<\/\1>/gi,
-    (_m, _t, content: string) => `**${content}**`
+    (match, tag, content: string) =>
+      ignoreTags.includes(tag.toLowerCase()) ? match : `**${content}**`
   );
-  html = html.replace(
-    /<(i|em)>(.*?)<\/\1>/gi,
-    (_m, _t, content: string) => `*${content}*`
+
+  // Italic
+  html = html.replace(/<(i|em)>(.*?)<\/\1>/gi, (match, tag, content: string) =>
+    ignoreTags.includes(tag.toLowerCase()) ? match : `*${content}*`
   );
 
   // Links
@@ -35,46 +39,59 @@ export default function preserveFormat({
   );
 
   // Ordered lists
-  html = html.replace(/<ol>(.*?)<\/ol>/gis, (_m, content: string) => {
+  html = html.replace(/<ol>(.*?)<\/ol>/gis, (match, content: string) => {
+    if (ignoreTags.includes("ol")) return match; // leave <ol> as-is
     let counter = 0;
-    return content.replace(/<li>(.*?)<\/li>/gi, (_li, liContent: string) => {
-      counter++;
-      return `${counter}. ${liContent}\n`;
-    });
+    return content.replace(/<li>(.*?)<\/li>/gi, (liMatch, liContent: string) =>
+      ignoreTags.includes("li") ? liMatch : `${++counter}. ${liContent}\n`
+    );
   });
 
   // Unordered lists
-  html = html.replace(/<ul>(.*?)<\/ul>/gis, (_m, content: string) =>
-    content.replace(
-      /<li>(.*?)<\/li>/gi,
-      (_li, liContent: string) => `- ${liContent}\n`
-    )
-  );
+  html = html.replace(/<ul>(.*?)<\/ul>/gis, (match, content: string) => {
+    if (ignoreTags.includes("ul")) return match; // keep whole <ul> block
+    return content.replace(/<li>(.*?)<\/li>/gi, (liMatch, liContent: string) =>
+      ignoreTags.includes("li") ? liMatch : `- ${liContent}\n`
+    );
+  });
 
   // Blockquotes
-  html = html.replace(
-    /<blockquote>(.*?)<\/blockquote>/gis,
-    (_m, content: string) =>
-      content
-        .replace(/<br\s*\/?>/gi, "\n")
-        .trim()
-        .split("\n")
-        .map((line) => `> ${line.trim()}`)
-        .join("\n")
-  );
+  html = !ignoreTags.includes("blockquote")
+    ? html.replace(
+        /<blockquote>(.*?)<\/blockquote>/gis,
+        (_m, content: string) =>
+          content
+            .replace(/<br\s*\/?>/gi, "\n")
+            .trim()
+            .split("\n")
+            .map((line) => `> ${line.trim()}`)
+            .join("\n")
+      )
+    : html;
 
   // Tables
-  html = html.replace(/<table>(.*?)<\/table>/gis, (_m, tableContent: string) =>
-    tableContent
-      .replace(
-        /<tr>(.*?)<\/tr>/gi,
-        (_tr, rowContent: string) =>
-          rowContent
-            .replace(/<t[dh]>(.*?)<\/t[dh]>/gi, "$1\t")
-            .trim()
-            .replace(/\t$/, "") + "\n"
-      )
-      .trim()
+  html = html.replace(
+    /<table>(.*?)<\/table>/gis,
+    (match, tableContent: string) => {
+      if (ignoreTags.includes("table")) return match; // keep whole table
+      return tableContent
+        .replace(/<tr>(.*?)<\/tr>/gi, (trMatch, rowContent: string) => {
+          if (ignoreTags.includes("tr")) return trMatch;
+          return (
+            rowContent
+              .replace(
+                /<t[dh]>(.*?)<\/t[dh]>/gi,
+                (cellMatch, cellContent: string) =>
+                  ignoreTags.includes("td") || ignoreTags.includes("th")
+                    ? cellMatch
+                    : `${cellContent}\t`
+              )
+              .trim()
+              .replace(/\t$/, "") + "\n"
+          );
+        })
+        .trim();
+    }
   );
 
   // Remove all remaining tags

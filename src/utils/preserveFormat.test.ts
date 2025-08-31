@@ -69,6 +69,44 @@ describe("preserveFormat", () => {
     expect(preserveFormat({ html })).toBe(expected);
   });
 
+  it("should ignore headings and paragraphs when listed in ignoreTags", () => {
+    const html = "<h1>Heading</h1><p>Paragraph</p>";
+    const expected = "<h1>Heading</h1><p>Paragraph</p>";
+    expect(preserveFormat({ html, ignoreTags: ["h1", "p"] })).toBe(expected);
+  });
+
+  it("should ignore links when listed in ignoreTags", () => {
+    const html = '<a href="https://example.com">Click here</a>';
+    const expected = '<a href="https://example.com">Click here</a>';
+    expect(preserveFormat({ html, ignoreTags: ["a"] })).toBe(expected);
+  });
+
+  it("should ignore blockquotes when listed in ignoreTags", () => {
+    const html = "<blockquote>Quote line 1<br>Quote line 2</blockquote>";
+    const expected = "<blockquote>Quote line 1<br>Quote line 2</blockquote>";
+    expect(preserveFormat({ html, ignoreTags: ["blockquote"] })).toBe(expected);
+  });
+
+  it("should ignore bold and italic when listed in ignoreTags", () => {
+    const html = "<b>Bold</b> and <i>Italic</i>";
+    const expected = "<b>Bold</b> and <i>Italic</i>";
+    expect(preserveFormat({ html, ignoreTags: ["b", "i"] })).toBe(expected);
+  });
+
+  it("should ignore table rows and cells when listed in ignoreTags", () => {
+    const html = `
+    <table>
+      <tr><td>A1</td><td>B1</td></tr>
+      <tr><td>A2</td><td>B2</td></tr>
+    </table>`;
+    const expected = `
+    <table>
+      <tr><td>A1</td><td>B1</td></tr>
+      <tr><td>A2</td><td>B2</td></tr>
+    </table>`;
+    expect(preserveFormat({ html, ignoreTags: ["table"] })).toBe(expected);
+  });
+
   it("should handle complex nested content", () => {
     const html = `<h1>Main Heading</h1>
     <p>Paragraph with <b>bold</b> and <i>italic</i> text</p>
