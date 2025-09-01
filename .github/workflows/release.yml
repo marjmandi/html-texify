@@ -30,7 +30,7 @@ jobs:
         run: pnpm build
 
       - name: Automated Release
-        uses: semantic-release-action/github-actions@v4
+        uses: semantic-release/semantic-release@v24
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
