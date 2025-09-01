@@ -8,7 +8,8 @@
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     }
   },
   "scripts": {
@@ -21,7 +22,12 @@
     "test:watch": "jest --watchAll"
   },
   "keywords": [
-    "html"
+    "html",
+    "text",
+    "strip-tags",
+    "convert",
+    "parser",
+    "html-to-text"
   ],
   "author": "Sam Arjmandi",
   "license": "MIT",
