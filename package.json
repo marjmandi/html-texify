@@ -8,8 +8,7 @@
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.js"
     }
   },
   "scripts": {
@@ -43,6 +42,14 @@
     "tsup": "^8.5.0",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.41.0"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marjmandi/html-textify.git"
   },
   "engines": {
     "node": ">=20.0.0"
