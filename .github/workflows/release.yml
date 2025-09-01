@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - live # only release from the live branch
+      - live
 
 jobs:
   release:
@@ -30,7 +30,7 @@ jobs:
         run: pnpm build
 
       - name: Automated Release
-        uses: semantic-release/semantic-release@v20
+        uses: semantic-release-action/github-actions@v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
