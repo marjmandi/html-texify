@@ -14,8 +14,7 @@ describe("textify", () => {
       preserveFormatting: true,
       ignoreTags: ["mark", "foo"],
     });
-    // <b> remains, <i> and <p> are stripped
-    expect(result).toBe("Paragraph **bold** *italic*");
+    expect(result).toBe("Paragraph **<mark>bold</mark>**<foo />*italic*<foo/>");
   });
 
   test("handles multiple ignored tags", () => {
@@ -34,14 +33,13 @@ describe("textify", () => {
     expect(result).toBe("Test");
   });
 
-  test("ignoreTags has no effect when preserveFormatting is true", () => {
+  test("preserveFormat has no effect when they are in ignoreTags", () => {
     const html = "<p>Paragraph <b>bold</b> <i>italic</i></p>";
     const result = textify({
       html,
       preserveFormatting: true,
       ignoreTags: ["b", "i"],
     });
-    expect(result).toContain("**bold**");
-    expect(result).toContain("*italic*");
+    expect(result).toBe("Paragraph <b>bold</b><i>italic</i>");
   });
 });

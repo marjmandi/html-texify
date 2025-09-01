@@ -17,16 +17,19 @@ export function textify({
   if (preserveFormatting) {
     // Keep readable formatting
     html = preserveFormat({ html, ignoreTags });
+  } else {
+    if (ignoreTags.length === 0) {
+      // Strip all tags
+      html = html.replace(/<[^>]+>/g, "").trim();
+    } else {
+      // Regex to match all tags except the ignored ones
+      const IG = new Set(ignoreTags.map((t) => t.toLowerCase()));
+      html = html
+        .replace(/<\/?([a-z][a-z0-9-]*)\b[^>]*>/gi, (match, tag) =>
+          IG.has(tag.toLowerCase()) ? match : ""
+        )
+        .trim();
+    }
   }
-
-  if (ignoreTags.length === 0) {
-    // Strip all tags
-    return html.replace(/<[^>]+>/g, "").trim();
-  }
-
-  // Regex to match all tags except the ignored ones
-  const tagsPattern = ignoreTags.join("|");
-  const regex = new RegExp(`<\\/?(?!${tagsPattern}\\b)[^>]+?>`, "gi");
-
-  return html.replace(regex, "").trim();
+  return html;
 }
