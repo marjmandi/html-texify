@@ -1,12 +1,12 @@
-name: Publish to npm
+name: Release
 
 on:
   push:
     branches:
-      - live
+      - live # only release from the live branch
 
 jobs:
-  publish:
+  release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -29,7 +29,8 @@ jobs:
       - name: Build package
         run: pnpm build
 
-      - name: Publish package
-        run: pnpm publish --access public  --no-git-checks
+      - name: Automated Release
+        uses: semantic-release/semantic-release@v20
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
