@@ -33,10 +33,12 @@ export default function preserveFormat({
   );
 
   // Links
-  html = html.replace(
-    /<a\s+href="(.*?)".*?>(.*?)<\/a>/gi,
-    (_m, href: string, text: string) => `${text} (${href})`
-  );
+  html = !ignoreTags.includes("a")
+    ? html.replace(
+        /<a\s+href="(.*?)".*?>(.*?)<\/a>/gi,
+        (_m, href: string, text: string) => `${text} (${href})`
+      )
+    : html;
 
   // Ordered lists
   html = html.replace(/<ol>(.*?)<\/ol>/gis, (match, content: string) => {
@@ -95,7 +97,13 @@ export default function preserveFormat({
   );
 
   // Remove all remaining tags
-  html = html.replace(/<[^>]+>/g, "");
+  if (ignoreTags.length === 0) {
+    html = html.replace(/<[^>]+>/g, "");
+  } else {
+    html = html.replace(/<\/?([a-z0-9]+)[^>]*>/gi, (match, tag: string) =>
+      ignoreTags.includes(tag.toLowerCase()) ? match : ""
+    );
+  }
 
   // Decode common HTML entities
   html = html

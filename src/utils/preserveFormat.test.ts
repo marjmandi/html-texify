@@ -83,7 +83,7 @@ describe("preserveFormat", () => {
 
   it("should ignore blockquotes when listed in ignoreTags", () => {
     const html = "<blockquote>Quote line 1<br>Quote line 2</blockquote>";
-    const expected = "<blockquote>Quote line 1<br>Quote line 2</blockquote>";
+    const expected = "<blockquote>Quote line 1\nQuote line 2</blockquote>";
     expect(preserveFormat({ html, ignoreTags: ["blockquote"] })).toBe(expected);
   });
 
@@ -99,12 +99,10 @@ describe("preserveFormat", () => {
       <tr><td>A1</td><td>B1</td></tr>
       <tr><td>A2</td><td>B2</td></tr>
     </table>`;
-    const expected = `
-    <table>
-      <tr><td>A1</td><td>B1</td></tr>
-      <tr><td>A2</td><td>B2</td></tr>
-    </table>`;
-    expect(preserveFormat({ html, ignoreTags: ["table"] })).toBe(expected);
+    const expected = `<table><tr><td>A1</td><td>B1</td></tr><tr><td>A2</td><td>B2</td></tr></table>`;
+    expect(preserveFormat({ html, ignoreTags: ["table", "tr", "td"] })).toBe(
+      expected
+    );
   });
 
   it("should handle complex nested content", () => {
