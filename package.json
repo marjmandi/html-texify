@@ -17,6 +17,8 @@
     "prepublishOnly": "pnpm build",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
+    "format": "prettier --check \"src/**/*.{ts,js,json,md}\"",
+    "format:fix": "prettier --write \"src/**/*.{ts,js,json,md}\"",
     "test": "jest",
     "test:watch": "jest --watchAll"
   },
