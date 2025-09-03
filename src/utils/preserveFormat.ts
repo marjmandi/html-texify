@@ -3,7 +3,7 @@ interface PreserveFormatOptions {
   ignoreTags?: string[];
 }
 
-export default function preserveFormat({
+export function preserveFormat({
   html,
   ignoreTags = [],
 }: PreserveFormatOptions): string {
