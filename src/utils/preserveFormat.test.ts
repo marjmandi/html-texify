@@ -1,4 +1,4 @@
-import preserveFormat from './preserveFormat';
+import { preserveFormat } from './preserveFormat';
 
 describe('preserveFormat', () => {
   it('should return empty string for empty input', () => {
