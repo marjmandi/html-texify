@@ -1,6 +1,6 @@
 {
   "name": "html-textify",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "Convert html to plain text",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -17,6 +17,8 @@
     "prepublishOnly": "pnpm build",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
+    "format": "prettier --check \"src/**/*.{ts,js,json,md}\"",
+    "format:fix": "prettier --write \"src/**/*.{ts,js,json,md}\"",
     "test": "jest",
     "test:watch": "jest --watchAll"
   },
@@ -36,7 +38,10 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^24.3.0",
     "eslint": "^9.34.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
     "jest": "^30.1.1",
+    "prettier": "^3.6.2",
     "ts-jest": "^29.4.1",
     "ts-node": "^10.9.2",
     "tsup": "^8.5.0",
