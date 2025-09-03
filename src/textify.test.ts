@@ -95,4 +95,37 @@ describe('textify', () => {
     // since preserveFormat handles it, just check it returns something non-empty
     expect(result).not.toBe('');
   });
+
+  test('wraps text by word count when wrapWords is set', () => {
+    const html = '<p>one two three four five six seven</p>';
+    const result = textify({ html, preserveFormatting: false, wrapWords: 3 });
+    expect(result).toBe('one two three\nfour five six\nseven');
+  });
+
+  test('wraps text by character length when wrapLength is set', () => {
+    const html = '<p>This is a test sentence for wrapping.</p>';
+    const result = textify({ html, preserveFormatting: false, wrapLength: 10 });
+    expect(result).toBe('This is a\ntest\nsentence\nfor\nwrapping.');
+  });
+
+  test('wrapWords takes priority over wrapLength', () => {
+    const html = '<p>one two three four five</p>';
+    const result = textify({
+      html,
+      preserveFormatting: false,
+      wrapWords: 2,
+      wrapLength: 5,
+    });
+    expect(result).toBe('one two\nthree four\nfive');
+  });
+
+  test('does not wrap when wrapWords or wrapLength is zero or negative', () => {
+    const html = '<p>one two three</p>';
+    expect(() =>
+      textify({ html, preserveFormatting: false, wrapWords: 0 })
+    ).not.toThrow();
+    expect(() =>
+      textify({ html, preserveFormatting: false, wrapLength: 0 })
+    ).not.toThrow();
+  });
 });
