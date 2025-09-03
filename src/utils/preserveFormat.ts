@@ -3,6 +3,36 @@ interface PreserveFormatOptions {
   ignoreTags?: string[];
 }
 
+/**
+ * Converts HTML to a more readable plain-text format while optionally preserving certain tags.
+ * - Converts headings and paragraphs to double newlines.
+ * - Converts `<br>` to newline.
+ * - Wraps bold (`<b>`, `<strong>`) in `**`.
+ * - Wraps italic (`<i>`, `<em>`) in `*`.
+ * - Converts links `<a href="...">text</a>` to `text (url)`.
+ * - Formats lists (`<ol>`, `<ul>`) and list items.
+ * - Formats blockquotes (`<blockquote>`) with `> ` prefix.
+ * - Converts tables to tab-delimited rows.
+ * - Decodes common HTML entities.
+ * - Collapses multiple newlines to a maximum of two.
+ *
+ * @param {Object} options - Options for preserving format.
+ * @param {string} options.html - The input HTML string to format.
+ * @param {string[]} [options.ignoreTags] - List of tags to leave intact (default: `[]`).
+ * @returns {string} The formatted plain-text representation of the HTML.
+ *
+ * @example
+ * preserveFormat({ html: '<p>Hello <b>world</b></p>' });
+ * // => 'Hello **world**'
+ *
+ * @example
+ * preserveFormat({ html: '<ul><li>One</li><li>Two</li></ul>' });
+ * // => '- One\n- Two'
+ *
+ * @example
+ * preserveFormat({ html: '<a href="https://example.com">Link</a>', ignoreTags: ['a'] });
+ * // => '<a href="https://example.com">Link</a>'
+ */
 export function preserveFormat({
   html,
   ignoreTags = [],
